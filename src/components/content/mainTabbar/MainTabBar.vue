@@ -38,6 +38,6 @@
 
 <style scoped>
   .tab{
-    z-index: 9;
+    z-index: 7;
   }
 </style>

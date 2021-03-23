@@ -1,7 +1,7 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav">
-      <div slot="center">购物车</div>
+      <div slot="center">购物街</div>
     </nav-bar>
     <tab-contorl :title="['流行','新款','精选']" 
       class="tabcontorl"
@@ -39,10 +39,9 @@ import NavBar from 'components/common/navbar/NavBar'
 import Scroll from 'components/common/Scroll/Scroll'
 import TabContorl from 'components/content/TabContorl/TabContorl.vue'
 import GoodsList from 'components/content/goods/GoodsList.vue'
-import BackTop from 'components/content/backTop/BackTop.vue'
 
 import {getHomeMultidata,getHomeGoods} from 'network/home.js'
-import {debounce} from '../../common/utils'
+import {itemListenerMixin,backTopMixin} from 'common/mixin.js'
 
 export default {
   name: "Home",
@@ -54,7 +53,6 @@ export default {
     TabContorl,
     GoodsList,
     Scroll,
-    BackTop
   },
   data() {
     return {
@@ -66,11 +64,12 @@ export default {
         'sell': {page: 0, list: []}
       },
       currentType: 'pop',
-      isshow: false,
       tabOffsetTop: 0,
-      isTabFixed: false
+      isTabFixed: false,
+      saveY : 0
     }
   },
+  mixins: [itemListenerMixin,backTopMixin],
   computed: {
     showGoods(){
       return this.goods[this.currentType].list
@@ -84,23 +83,17 @@ export default {
 
   },
   mounted() {
-    // 监听item中的图片加载完成
-    //（为什么不放在created中? 放在created中会拿不到this.$refs.scroll）
-    const refresh = debounce(this.$refs.scroll.refresh,300)
-    this.$bus.$on('itemImageLoad',() => {
-      refresh()
-    })
-
-    
   },
   activated() {
+    this.$refs.scroll.scrollTo(0,this.saveY)
     this.$refs.scroll.refresh()
+  },
+  deactivated() {
+    this.saveY = this.$refs.scroll.getScrollY()
+    this.$bus.$off("itemImageLoad",this.itemImgListener)
   },
   methods: {
     // 事件监听的方法
-    backClick(){
-      this.$refs.scroll.scrollTo(0,0)
-    },
     tabClick(index){
         switch(index){
           case 0: 
