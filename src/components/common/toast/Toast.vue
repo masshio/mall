@@ -26,7 +26,7 @@ export default {
 
 </script>
 <style scoped>
-  .toast{
+    .toast{
       position: fixed;
       z-index: 9;
       top: 50%;
@@ -36,5 +36,5 @@ export default {
       color: #fff;
       background-color: rgba(0, 0, 0, .75);
       border-radius: 10px;
-  }
+    }
 </style>

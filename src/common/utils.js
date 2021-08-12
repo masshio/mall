@@ -1,5 +1,5 @@
 export function debounce(func,delay=100){ //防抖函数
-    let timer = null
+    let timer = null;
     return function(...args){
       if (timer) clearTimeout(timer)
       timer = setTimeout(() => {
@@ -7,6 +7,19 @@ export function debounce(func,delay=100){ //防抖函数
       }, delay);
     }
   }
+
+//节流函数
+function throttle(func,delay=100){
+  let timer = null;
+  return function(...args){
+    if(!timer){
+      timer = setTimeout(() => {
+        func.apply(this,args);
+        timer = null;
+      },delay)
+    }
+  }
+}
 
 // 时间转化格式所需
 function padLeftZero(str) {
